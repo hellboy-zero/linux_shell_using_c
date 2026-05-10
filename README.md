@@ -1,1 +1,3 @@
-# C-shell
+# Linux Shell Using C
+
+the custom shell is written in C but for now it is not complete yet , it is more of a dumm for now then a complete shell or even a half baked shell , which might take my 2-3 months more to figure out how to implement few things in the C for till now it is just a dummy...
