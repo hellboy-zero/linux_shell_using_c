@@ -1,3 +1,37 @@
 # Linux Shell Using C
 
-the custom shell is written in C but for now it is not complete yet , it is more of a dumm for now then a complete shell or even a half baked shell , which might take my 2-3 months more to figure out how to implement few things in the C for till now it is just a dummy...
+A lightweight, Unix-like command-line shell implemented in C. This project demonstrates core systems programming concepts, including process management, signal handling, and file I/O.
+
+## 🚀 Features
+* **Command Execution:** Executes standard system commands by forking child processes.
+* **Built-in Commands:** Supports custom implementations of essential commands:
+    * `cd` : Change the current working directory.
+    * `exit` : Terminate the shell session.
+    * `history` : Displays recent commands executed during the session.
+* **Process Management:** Handles basic process lifecycle management.
+* **Signal Handling:** Configured to handle signals (like `Ctrl+C`) to prevent accidental termination of the shell.
+
+## 🛠 Prerequisites
+To compile and run this project, you will need:
+* A C compiler (e.g., `gcc`)
+* `make` (optional, for the Makefile)
+* A Linux/Unix-based environment
+
+## 📥 Installation
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/hellboy-zero/linux_shell_using_c.git]
+    cd linux_shell_using_c
+    ```
+
+2.  **Compile the source code:**
+    If you have a `Makefile`, simply run:
+    ```bash
+    make
+    ```
+    
+
+## 💻 Usage
+After compiling, start the shell by running the executable:
+```bash
+./shell
