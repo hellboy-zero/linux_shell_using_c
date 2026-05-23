@@ -4,10 +4,7 @@ A lightweight, Unix-like command-line shell implemented in C. This project demon
 
 ## 🚀 Features
 * **Command Execution:** Executes standard system commands by forking child processes.
-* **Built-in Commands:** Supports custom implementations of essential commands:
-    * `cd` : Change the current working directory.
-    * `exit` : Terminate the shell session.
-    * `history` : Displays recent commands executed during the session.
+* **Built-in Commands:** Supports custom implementations of essential commands like ('cd' , 'ls' , 'echo' , 'exit' , and other)
 * **Process Management:** Handles basic process lifecycle management.
 * **Signal Handling:** Configured to handle signals (like `Ctrl+C`) to prevent accidental termination of the shell.
 
