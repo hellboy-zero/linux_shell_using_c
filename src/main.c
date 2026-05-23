@@ -1,123 +1,95 @@
-#include "Shell.h"
+#include "shell.h"
 
-void echo(char *INPUT)
+// Shell loop
+// Input Parsing
+// Command execution 
+// Handle Built-in commands exp. cd, pwd, echo, env, setenv, unsetenv, which, exit
+// Execute external commands
+// Manage environment variables
+// Manage Path
+// Error Handling
+
+void display_help() {
+    printf("Available commands:\n");
+    printf("\tcd <directory>      - Change the current directory.\n");
+    printf("\tpwd                 - Print the current working directory.\n");
+    printf("\techo <text>         - Print the given text.\n");
+    printf("\tenv                 - Display all environment variables.\n");
+    printf("\tsetenv VAR=value    - Set an environment variable.\n");
+    printf("\tunsetenv <variable> - Remove an environment variable.\n");
+    printf("\twhich <command>     - Locate an executable in the system's PATH.\n");
+    printf("\t.help               - Display this help message.\n");
+    printf("\texit or quit        - Exit the shell.\n");
+}
+
+// Built-ins: cd, pwd, echo, env, setenv, unsetenv, which, exit
+// Binary: ls, cat.. we'll use executor
+int shell_builts(char** args, char** env, char* initial_directory)
 {
-    if (strncmp(INPUT, "echo ", 5) == 0)
-    {
-        write(1 , INPUT + 5, strlen(INPUT + 5) );
-        write(1 , "\n", 1);
+    if (my_strcmp(args[0], "cd") == 0) {
+        return command_cd(args, initial_directory);
+    } else if (my_strcmp(args[0], "pwd") == 0) {
+        return command_pwd();
+    } else if (my_strcmp(args[0], "echo") == 0) {
+        return command_echo(args, env);
+    } else if (my_strcmp(args[0], "env") == 0) {
+        return command_env(env);
+    } else if (my_strcmp(args[0], "which") == 0) {
+        return command_which(args, env);
+    } else if (my_strcmp(args[0], ".help") == 0) {
+        display_help();
+        return 0;
+    } else if (my_strcmp(args[0], "exit") == 0 || my_strcmp(args[0], "quit") == 0) {
+        exit(EXIT_SUCCESS);
+    } else {
+        // Not a built-in command, execute as external command
+        return executor(args, env);
     }
+    return 0;
 }
 
-void clear(char *INPUT)
+void shell_loop(char** env)
 {
-    write(1 , "\033c", 2);
-}
+    char* input = NULL;
+    size_t input_size = 0;
 
-void clean(char *INPUT)
-{
-    write(1 , "\033[H", 4);
-}
+    char** args;
+    char* initial_directory = getcwd(NULL, 0);
 
+    printf("Type .help for a list of available commands.\n");
 
-void ls(char *INPUT)
-{
-    // write();
-}
-
-void pipe_c(char *INPUT)
-{
-    // code
-}
-
-void cd(char *INPUT)
-{
-    // code
-}
-
-void pwd(char *INPUT)
-{
-    // code
-}
-
-void cat(char *INPUT)
-{
-    // code
-}
-
-void touch(char *INPUT)
-{
-    // code
-}
-
-command commands[] =
-{
-    {"echo", echo},
-    {"clear", clear},
-    {"|", pipe_c},
-    {"cd", cd},
-    {"pwd", pwd},
-    {"cat", cat},
-    {"touch", touch},
-    {"clean", clean},
-    {"ls", ls}
-
-};
-
-int main(void)
-{
-   char INPUT[BUFFER];
-
-    while(1)
+    while (1)
     {
-        // prompt
-        if (USER_ID != 0)
+        printf(">>> ");
+        if (getline(&input, &input_size, stdin) == -1) // End of the file (EOF), ctrl + D
         {
-            write(1 , USER  , strlen(USER));
-        }
-        else
-        {
-            write(1 , ROOT  , strlen(ROOT));
-        }
-        
-        // clear buffer
-        memset(INPUT , 0 , sizeof(INPUT));
-
-        // read input
-        size_t bytes_Read =  read(0 , INPUT , sizeof(INPUT) - 1 );
-
-        if (bytes_Read <= 0)
+            perror("getline");
             break;
+        }    
 
-        // remove newline 
-        INPUT[bytes_Read - 1] = '\0';
+        args = parse_input(input);
 
-        // copy input to temp buffer
-        char TEMP[BUFFER];
-        strcpy(TEMP , INPUT);
-
-        // tokenize copy 
-        char *cmd = strtok(TEMP , " ");
-
-        // found flag
-        int found = 0;
-
-        for (int i = 0; i < 9; i++)
-        {
-            if (strcmp(cmd , commands[i].name)==0 ){
-                commands[i].func(INPUT);
-                found = 1;
-                break;
-            }
-        }
-
-        if(!found)
-        {
-            write(1, "Enter a valid command\n", 22);
+        if (!args[0]) {
+            return;
+        } else if (my_strcmp(args[0], "setenv") == 0) {
+            env = command_setenv(args, env);
+        } else if (my_strcmp(args[0], "unsetenv") == 0) {
+            env = command_unsetenv(args, env);
+        } else {
+            shell_builts(args, env, initial_directory);
         }
     }
-
-
     
-}
+    free_tokens(args);
+    free(env);
+} 
 
+int main (int argc, char** argv, char** env)
+{
+    (void)argc;
+    (void)argv;
+
+    shell_loop(env);
+
+    return 0;
+}
